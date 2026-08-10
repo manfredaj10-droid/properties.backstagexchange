@@ -1,0 +1,295 @@
+/* ===== AUTH MODAL — BackstageXchange luxury theme ===== */
+
+/* ── Backdrop ── */
+.auth-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 30, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: authFadeIn 0.22s ease;
+}
+
+@keyframes authFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Panel ── */
+.auth-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 32px 80px rgba(10, 15, 30, 0.35);
+  overflow: hidden;
+  animation: authSlideUp 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+@keyframes authSlideUp {
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Close button ── */
+.auth-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9aa4b5;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: color 0.18s, background 0.18s;
+  z-index: 2;
+}
+.auth-close:hover { color: #1a2340; background: #f3f0e8; }
+
+/* ── Header strip (gold accent) ── */
+.auth-header {
+  background: linear-gradient(135deg, #1a2340 0%, #243060 100%);
+  padding: 2rem 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+}
+.auth-header-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.auth-header-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.01em;
+}
+.auth-header-sub {
+  font-size: 0.85rem;
+  color: #c9c3b0;
+  margin: 0;
+}
+
+/* ── Tab switcher ── */
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid #f0ece4;
+  background: #faf8f4;
+}
+.auth-tab {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9aa4b5;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.18s, border-color 0.18s;
+}
+.auth-tab.active {
+  color: #c9a84c;
+  border-bottom-color: #c9a84c;
+}
+.auth-tab:hover:not(.active) { color: #1a2340; }
+
+/* ── Body ── */
+.auth-body {
+  padding: 1.75rem 2rem 2rem;
+}
+
+/* ── Field groups ── */
+.auth-field {
+  margin-bottom: 1.1rem;
+}
+.auth-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #6b7485;
+  margin-bottom: 0.4rem;
+}
+.auth-input {
+  width: 100%;
+  padding: 0.72rem 0.95rem;
+  border: 1.5px solid #e0dbd0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1a2340;
+  background: #fdfcf9;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  box-sizing: border-box;
+}
+.auth-input:focus {
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+  background: #fff;
+}
+.auth-input.input-error { border-color: #d94f4f; }
+.auth-field-error {
+  display: block;
+  font-size: 0.78rem;
+  color: #d94f4f;
+  margin-top: 0.3rem;
+}
+
+/* ── Name row (side by side on wider screens) ── */
+.auth-name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+@media (max-width: 380px) {
+  .auth-name-row { grid-template-columns: 1fr; }
+}
+
+/* ── Primary CTA ── */
+.auth-btn-primary {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #c9a84c 0%, #e0c06a 100%);
+  color: #1a2340;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.18s, transform 0.15s;
+}
+.auth-btn-primary:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.auth-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Divider ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: #b8b2a6;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e8e4dc;
+}
+
+/* ── Google / Social button ── */
+.auth-btn-social {
+  width: 100%;
+  padding: 0.72rem 1rem;
+  border: 1.5px solid #e0dbd0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a2340;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.auth-btn-social:hover {
+  border-color: #c9a84c;
+  background: #faf8f2;
+}
+.auth-btn-social svg { flex-shrink: 0; }
+
+/* ── Switch mode link ── */
+.auth-switch {
+  text-align: center;
+  font-size: 0.83rem;
+  color: #9aa4b5;
+  margin-top: 1.2rem;
+}
+.auth-switch button {
+  background: none;
+  border: none;
+  color: #c9a84c;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.auth-switch button:hover { color: #1a2340; }
+
+/* ── Forgot password link ── */
+.auth-forgot {
+  background: none;
+  border: none;
+  color: #9aa4b5;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: block;
+  text-align: right;
+}
+.auth-forgot:hover { color: #c9a84c; }
+
+/* ── Success tick (post-signup) ── */
+.auth-success {
+  text-align: center;
+  padding: 2rem 2rem 2.5rem;
+}
+.auth-success-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+.auth-success-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.3rem;
+  color: #1a2340;
+  margin: 0 0 0.4rem;
+}
+.auth-success-sub {
+  font-size: 0.88rem;
+  color: #6b7485;
+  margin: 0 0 1.5rem;
+}
+
+/* ── Spinner ── */
+.auth-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(26, 35, 64, 0.25);
+  border-top-color: #1a2340;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,493 @@
+/* =========================================================
+   PROPERTIES PAGE — BackstageXchange Property
+   Design: Luxury dark navy + warm gold, glassmorphism filter
+   ========================================================= */
+ 
+/* ── Hero ── */
+.props-page {
+  background: var(--cream);
+  min-height: 100vh;
+}
+ 
+.props-hero {
+  position: relative;
+  height: 420px;
+  background-image: url('https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=1600&q=80');
+  background-size: cover;
+  background-position: center 40%;
+  display: flex;
+  align-items: flex-end;
+}
+ 
+.props-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 27, 50, 0.40) 0%,
+    rgba(13, 27, 50, 0.72) 60%,
+    rgba(13, 27, 50, 0.90) 100%
+  );
+}
+ 
+.props-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 5vw 3rem;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  width: 100%;
+}
+ 
+.props-hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.75rem;
+}
+ 
+.props-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+ 
+.props-hero-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+ 
+.props-hero-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 480px;
+}
+ 
+/* ── Floating Filter Glass Card ── */
+.props-filter-wrap {
+  max-width: var(--max-w);
+  margin: -52px auto 0;
+  padding: 0 5vw;
+  position: relative;
+  z-index: 10;
+}
+ 
+.props-filter-glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow:
+    0 8px 40px rgba(13, 27, 50, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.80) inset;
+}
+ 
+/* Category pills */
+.props-cat-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+ 
+.props-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.48rem 1.1rem;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(13, 27, 50, 0.06);
+  border: 1.5px solid transparent;
+  color: var(--text-body);
+  cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+ 
+.props-cat-pill:hover {
+  background: rgba(184, 151, 58, 0.10);
+  border-color: var(--gold-border);
+  color: var(--gold);
+}
+ 
+.props-cat-pill.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--gold-light);
+  box-shadow: 0 2px 12px rgba(13, 27, 50, 0.22);
+}
+ 
+/* Search row */
+.props-search-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #fff;
+  border: 1.5px solid rgba(13, 27, 50, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+ 
+.props-search-field {
+  flex: 1;
+  padding: 0.7rem 1.1rem 0.75rem;
+  min-width: 0;
+}
+ 
+.props-search-field--wide {
+  flex: 2;
+}
+ 
+.props-field-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+ 
+.props-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-heading);
+  background: transparent;
+  padding: 0;
+}
+ 
+.props-search-input::placeholder { color: var(--text-faint); }
+ 
+.props-search-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-heading);
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+  padding: 0;
+}
+ 
+.props-search-divider {
+  width: 1px;
+  height: 34px;
+  background: rgba(13, 27, 50, 0.09);
+  flex-shrink: 0;
+}
+ 
+.props-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 0 1.6rem;
+  height: 56px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--t) var(--ease);
+}
+ 
+.props-search-btn:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+ 
+/* ── Results Section ── */
+.props-results-section {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 2.5rem 5vw 5rem;
+}
+ 
+.props-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+ 
+.props-count {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+ 
+.props-count strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-right: 0.2rem;
+}
+ 
+.props-empty {
+  text-align: center;
+  padding: 5rem 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+ 
+/* ── Property Grid ── */
+.props-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+ 
+/* ── Property Card ── */
+.prop-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition:
+    transform 0.28s var(--ease),
+    box-shadow 0.28s var(--ease);
+}
+ 
+.prop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+ 
+/* Image */
+.prop-card-img-wrap {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+}
+ 
+.prop-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.44s var(--ease);
+}
+ 
+.prop-card:hover .prop-card-img {
+  transform: scale(1.07);
+}
+ 
+.prop-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(13, 27, 50, 0.38) 100%
+  );
+  pointer-events: none;
+}
+ 
+/* Sale/Rent badge */
+.prop-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+ 
+.prop-badge--sale {
+  background: var(--navy);
+  color: #fff;
+}
+ 
+.prop-badge--rent {
+  background: var(--gold);
+  color: var(--navy);
+}
+ 
+/* Price pill on image */
+.prop-price-pill {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background: var(--navy);
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 8px;
+  letter-spacing: -0.01em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+}
+ 
+/* Card Body */
+.prop-card-body {
+  padding: 1rem 1.1rem 1.1rem;
+}
+ 
+.prop-card-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-heading);
+  line-height: 1.25;
+  margin-bottom: 0.3rem;
+}
+ 
+.prop-card-loc {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+}
+ 
+.prop-card-loc svg { flex-shrink: 0; color: var(--gold); }
+ 
+/* Specs row */
+.prop-specs {
+  display: flex;
+  gap: 0.9rem;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+ 
+.prop-specs span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+ 
+.prop-specs svg { color: var(--gold); flex-shrink: 0; }
+ 
+/* Highlight row */
+.prop-highlight-row {
+  margin-bottom: 0.85rem;
+}
+ 
+.prop-highlight-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-tint);
+  border: 1px solid var(--gold-border);
+  padding: 0.22rem 0.65rem;
+  border-radius: 100px;
+  letter-spacing: 0.03em;
+}
+ 
+/* Card footer */
+.prop-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.prop-agent {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+ 
+.prop-agent-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+ 
+.prop-agent-name {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+ 
+.prop-view-btn {
+  background: transparent;
+  border: 1.5px solid var(--gold-border);
+  color: var(--gold);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease), border-color var(--t) var(--ease);
+  white-space: nowrap;
+}
+ 
+.prop-view-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+ 
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .props-grid { grid-template-columns: repeat(2, 1fr); }
+}
+ 
+@media (max-width: 860px) {
+  .props-search-row {
+    flex-direction: column;
+    border-radius: 10px;
+    height: auto;
+  }
+  .props-search-field { width: 100%; flex: none; }
+  .props-search-field--wide { flex: none; }
+  .props-search-divider { width: 100%; height: 1px; }
+  .props-search-btn { width: 100%; height: 48px; justify-content: center; border-radius: 0 0 8px 8px; }
+}
+ 
+@media (max-width: 640px) {
+  .props-hero { height: 300px; }
+  .props-filter-wrap { margin-top: -36px; padding: 0 1rem; }
+  .props-filter-glass { padding: 1rem; }
+  .props-results-section { padding: 2rem 1rem 4rem; }
+  .props-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}

@@ -1,0 +1,342 @@
+// src/data/blogPosts.js
+// Issue #6: Decoupled data with rich `body` field for dynamic rendering
+
+const blogPosts = [
+  {
+    id: 1,
+    category: 'Market Insights',
+    date: 'June 12, 2025',
+    title: 'Goa Property Market 2025: Record Demand for Luxury Villas',
+    excerpt:
+      'North Goa is witnessing an unprecedented surge in luxury villa demand, driven by NRI buyers and remote-working professionals seeking coastal retreats...',
+    img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=700&q=80',
+    readTime: '5 min read',
+    author: 'Sunita Rao',
+    body: [
+      {
+        type: 'lead',
+        text: 'North Goa is witnessing an unprecedented surge in luxury villa demand, driven by NRI buyers and remote-working professionals seeking coastal retreats with strong rental income potential.',
+      },
+      {
+        type: 'heading',
+        text: 'The Numbers Behind the Surge',
+      },
+      {
+        type: 'paragraph',
+        text: "Goa's luxury real estate market has witnessed a <strong>42% year-over-year increase</strong> in transaction volumes for properties priced above ₹2 Crore. The primary demand driver is a new wave of buyers: NRIs repatriating post-pandemic, high-net-worth professionals adopting hybrid work models, and seasoned investors diversifying into holiday rental assets.",
+      },
+      {
+        type: 'heading',
+        text: 'North Goa Hotspots for 2025',
+      },
+      {
+        type: 'paragraph',
+        text: 'Calangute, Anjuna, Assagao, and Morjim continue to dominate luxury buyer searches. However, emerging micro-markets like Siolim and Pilerne are gaining traction, offering larger plot sizes at comparatively lower per-square-foot rates—while still delivering strong rental yields of <strong>6–9% per annum</strong>.',
+      },
+      {
+        type: 'quote',
+        text: "The Goa villa market is no longer just a lifestyle play — it's becoming a serious wealth-building asset class for sophisticated investors.",
+        cite: '— Arjun Kamat, Luxury Villa Specialist, BackstageXchange Property',
+      },
+      {
+        type: 'heading',
+        text: 'What Buyers Are Prioritising in 2025',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Sea View Positioning:</strong> Properties with Arabian Sea views command 25–40% premium pricing',
+          '<strong>RERA Compliance:</strong> Buyers are now stringent about documentation — non-RERA properties are increasingly shunned',
+          '<strong>Rental Income Potential:</strong> Most luxury buyers factor in 120+ peak season rental days per year',
+          '<strong>Sustainability Features:</strong> Solar panels, rainwater harvesting, and eco-materials are becoming differentiators',
+        ],
+      },
+      {
+        type: 'heading',
+        text: 'Outlook for the Remainder of 2025',
+      },
+      {
+        type: 'paragraph',
+        text: 'With infrastructure improvements — including the Mopa Airport expansion and improved highway connectivity — Goa\'s property market fundamentals remain robust. Our analysts expect continued price appreciation of <strong>12–18% in prime coastal areas</strong> through December 2025.',
+      },
+      {
+        type: 'paragraph',
+        text: 'For buyers looking to enter the market, Q3 2025 presents a strategic window before anticipated price adjustments post-monsoon season.',
+      },
+    ],
+  },
+  {
+    id: 2,
+    category: 'Buying Guide',
+    date: 'May 28, 2025',
+    title: "Complete RERA Buyer's Guide: What Every Goa Property Investor Must Know",
+    excerpt:
+      "Navigating Goa's real estate regulations can be complex. Our RERA-certified experts break down everything you need to know before signing...",
+    img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=700&q=80',
+    readTime: '8 min read',
+    author: 'Arjun Kamat',
+    body: [
+      {
+        type: 'lead',
+        text: "Navigating Goa's real estate regulations can be complex. Our RERA-certified experts break down everything you need to know before signing any agreement.",
+      },
+      {
+        type: 'heading',
+        text: 'What Is RERA and Why Does It Matter?',
+      },
+      {
+        type: 'paragraph',
+        text: 'The Real Estate (Regulation and Development) Act, 2016 was enacted to protect homebuyers and boost investments in the real estate sector. In Goa, the Goa Real Estate Regulatory Authority (GRERA) oversees compliance, ensuring that builders register projects and adhere to promised timelines and specifications.',
+      },
+      {
+        type: 'heading',
+        text: 'Key Documents You Must Verify',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>RERA Registration Certificate:</strong> Every project above 500 sq m must be registered',
+          '<strong>Title Deed & Encumbrance Certificate:</strong> Confirm clear, marketable title',
+          '<strong>Approved Building Plan:</strong> Ensure the structure matches sanctioned drawings',
+          '<strong>Occupancy Certificate:</strong> Critical for completed properties before taking possession',
+          '<strong>Conversion Certificate:</strong> Required if agricultural land was converted for residential use',
+        ],
+      },
+      {
+        type: 'quote',
+        text: 'Always insist on the RERA number before paying even a token amount. It is your primary safeguard as a buyer.',
+        cite: '— Arjun Kamat, RERA-Certified Consultant',
+      },
+      {
+        type: 'heading',
+        text: 'Stamp Duty & Registration Costs',
+      },
+      {
+        type: 'paragraph',
+        text: 'In Goa, stamp duty is levied at <strong>3.5%</strong> of the agreement value for residential properties. An additional 1% registration charge applies. For properties above ₹1 Crore, buyers should budget for these costs upfront to avoid delays at the time of registration.',
+      },
+    ],
+  },
+  {
+    id: 3,
+    category: 'Investment',
+    date: 'May 15, 2025',
+    title: 'Top 5 Areas in Goa Delivering the Highest Rental Yields in 2025',
+    excerpt:
+      "From Calangute to Morjim, we analyse rental yield data across Goa's most sought-after localities to help investors make smarter decisions...",
+    img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&q=80',
+    readTime: '6 min read',
+    author: 'Nisha Kumar',
+    body: [
+      {
+        type: 'lead',
+        text: "From Calangute to Morjim, we analyse rental yield data across Goa's most sought-after localities to help investors make smarter decisions in 2025.",
+      },
+      {
+        type: 'heading',
+        text: '1. Morjim — 8.5% Average Gross Yield',
+      },
+      {
+        type: 'paragraph',
+        text: "Morjim has emerged as Goa's top-performing micro-market for rental yields. Its quieter beach, proximity to Chapora Fort, and popularity among Russian and European long-stay tourists keep occupancy rates above 75% even outside peak season.",
+      },
+      {
+        type: 'heading',
+        text: '2. Assagao — 7.8% Average Gross Yield',
+      },
+      {
+        type: 'paragraph',
+        text: 'Known as the "boutique village" of North Goa, Assagao commands premium short-term rental rates due to its Instagram-worthy aesthetics, proximity to fine dining, and a discerning traveller base willing to pay top-of-market nightly rates.',
+      },
+      {
+        type: 'heading',
+        text: '3. Candolim — 7.2% Average Gross Yield',
+      },
+      {
+        type: 'paragraph',
+        text: 'A mature market with reliable charter tourist demand, Candolim benefits from its proximity to Aguada Fort and a range of established property management services that make absentee ownership straightforward.',
+      },
+      {
+        type: 'quote',
+        text: "Investors who focus purely on purchase price miss the bigger picture. Yield is about location, property type, and management quality working together.",
+        cite: '— Nisha Kumar, Investment Analyst',
+      },
+      {
+        type: 'heading',
+        text: 'Key Factors That Drive Yield',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Proximity to Beach:</strong> Sub-1km to a beach adds 1.5–2% to annual gross yield',
+          '<strong>Pool Availability:</strong> Private pool villas earn 35–50% more per night than non-pool equivalents',
+          '<strong>Property Management:</strong> Professional management adds ~15% to annual occupancy rates',
+          '<strong>Platform Visibility:</strong> Active listings on Airbnb, Booking.com & VRBO are non-negotiable',
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    category: 'Lifestyle',
+    date: 'April 30, 2025',
+    title: 'Living the Goa Dream: Why Professionals Are Making the Move',
+    excerpt:
+      "The work-from-anywhere revolution has transformed Goa's real estate landscape. Hear from buyers who made the leap and never looked back...",
+    img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80',
+    readTime: '4 min read',
+    author: "Rohan D'Souza",
+    body: [
+      {
+        type: 'lead',
+        text: "The work-from-anywhere revolution has permanently altered Goa's demographic landscape. A new class of owner-occupier has arrived — and they're buying, not renting.",
+      },
+      {
+        type: 'heading',
+        text: 'The Hybrid Work Migration',
+      },
+      {
+        type: 'paragraph',
+        text: 'Since 2022, Goa has seen a steady influx of professionals from Mumbai, Bengaluru, Delhi, and Pune — many of them in tech, finance, and the creative industries. With fibre-optic internet now reaching most of North Goa and co-working spaces proliferating, the practical barriers to relocation have essentially disappeared.',
+      },
+      {
+        type: 'heading',
+        text: 'What Life Actually Looks Like',
+      },
+      {
+        type: 'paragraph',
+        text: 'A typical morning might involve a sunrise walk on a near-empty beach, a cappuccino at a café with 200 Mbps WiFi, and a 9 AM Zoom call from a sun-drenched home office. Evenings bring sundowners, fresh seafood, and the kind of unhurried social life that major metros make structurally impossible.',
+      },
+      {
+        type: 'quote',
+        text: "I sold my 2BHK in Bandra and bought a 3BHK villa with a pool in Siolim for the same price. My quality of life went up 10x. I won't be going back.",
+        cite: '— Priya Menon, UX Designer (relocated 2023)',
+      },
+      {
+        type: 'heading',
+        text: 'The Financial Case for Moving',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Cost Arbitrage:</strong> Comparable living standards cost 40–60% less than Mumbai or Bengaluru',
+          '<strong>Asset Appreciation:</strong> Goa residential values have grown ~15% annually since 2022',
+          '<strong>Rental Income Optionality:</strong> Leave for a month, rent your villa, offset your annual costs',
+          '<strong>Quality of Life Premium:</strong> Intangible but consistently cited as the primary driver',
+        ],
+      },
+    ],
+  },
+  {
+    id: 5,
+    category: 'Market Insights',
+    date: 'April 18, 2025',
+    title: 'South Goa vs North Goa: Which Should You Buy In?',
+    excerpt:
+      'Tranquil beaches vs vibrant nightlife—both regions have compelling property stories. We compare prices, lifestyle, and investment potential...',
+    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80',
+    readTime: '7 min read',
+    author: 'Sunita Rao',
+    body: [
+      {
+        type: 'lead',
+        text: 'Tranquil beaches versus vibrant nightlife — both regions have compelling property stories. We run a rigorous comparison across price, lifestyle, yield, and long-term capital growth.',
+      },
+      {
+        type: 'heading',
+        text: 'Price Per Square Foot: North Wins on Premium, South on Value',
+      },
+      {
+        type: 'paragraph',
+        text: 'Prime North Goa (Anjuna, Vagator, Assagao) now averages <strong>₹12,000–₹18,000 per sq ft</strong> for villa-style construction. South Goa (Palolem, Agonda, Benaulim) remains 30–40% cheaper per sq ft, making it attractive for buyers prioritising capital efficiency over short-term yield.',
+      },
+      {
+        type: 'heading',
+        text: 'Rental Yield Comparison',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>North Goa:</strong> 6.5–9% gross yield; shorter season but higher nightly rates',
+          '<strong>South Goa:</strong> 5–7% gross yield; longer shoulder season; lower nightly rates',
+          '<strong>Winner for Yield:</strong> North Goa for short-stay; South Goa for long-stay and digital nomads',
+        ],
+      },
+      {
+        type: 'quote',
+        text: "If you want rental income and resale liquidity, North Goa is the pragmatic choice. If you want a personal retreat with lower competition, South Goa is deeply undervalued.",
+        cite: '— Sunita Rao, Senior Property Consultant',
+      },
+      {
+        type: 'heading',
+        text: 'Our Verdict',
+      },
+      {
+        type: 'paragraph',
+        text: 'There is no universal answer. First-time investors with a rental-income focus should lean North. Lifestyle buyers or those targeting the emerging long-stay segment should seriously consider South Goa before it catches up on pricing.',
+      },
+    ],
+  },
+  {
+    id: 6,
+    category: 'Legal',
+    date: 'March 25, 2025',
+    title: 'Property Registration in Goa: Step-by-Step 2025 Process',
+    excerpt:
+      'A comprehensive walkthrough of stamp duty, registration fees, and the legal process for buying property in Goa—updated for 2025 regulations...',
+    img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&q=80',
+    readTime: '9 min read',
+    author: 'Nisha Kumar',
+    body: [
+      {
+        type: 'lead',
+        text: 'A comprehensive walkthrough of stamp duty, registration fees, and the legal process for buying property in Goa — fully updated for 2025 regulations.',
+      },
+      {
+        type: 'heading',
+        text: 'Step 1: Execute the Sale Agreement',
+      },
+      {
+        type: 'paragraph',
+        text: 'Before registration, both parties sign a Sale Agreement (not the final deed). This document captures the agreed price, payment schedule, possession date, and penalty clauses. It should be drafted by a qualified advocate and stamped with the appropriate non-judicial stamp paper.',
+      },
+      {
+        type: 'heading',
+        text: 'Step 2: Stamp Duty Payment',
+      },
+      {
+        type: 'paragraph',
+        text: 'As of 2025, Goa levies stamp duty at <strong>3.5% of the market value or agreement value</strong> (whichever is higher). Payment is made online via the GRAS (Government Receipt Accounting System) portal. Retain the challan as it is required at the registration office.',
+      },
+      {
+        type: 'heading',
+        text: 'Step 3: Sub-Registrar Office Visit',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Identity Proof:</strong> Aadhaar + PAN for all parties',
+          '<strong>Two Witnesses:</strong> With valid photo ID; cannot be relatives of buyer or seller',
+          '<strong>Original Documents:</strong> Title deed, approved plan, EC, OC, RERA certificate',
+          '<strong>Passport-size Photographs:</strong> 3 copies per party',
+          '<strong>Registration Fee:</strong> 1% of property value, paid at the SRO',
+        ],
+      },
+      {
+        type: 'quote',
+        text: 'Book your SRO appointment at least 2 weeks in advance. Walk-ins are no longer accepted in most Goa sub-registrar offices post the 2024 digitisation drive.',
+        cite: '— Nisha Kumar, Legal Advisory Team',
+      },
+      {
+        type: 'heading',
+        text: 'Step 4: Post-Registration Checklist',
+      },
+      {
+        type: 'paragraph',
+        text: 'After registration, update the municipal records (mutation) within 90 days to reflect the change of ownership. This is essential for utility transfers, property tax billing, and any future resale. The mutation process can be initiated at your local Panchayat or Municipal Council office.',
+      },
+    ],
+  },
+];
+
+export default blogPosts;

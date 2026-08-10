@@ -1,0 +1,632 @@
+/* ===== ADD PROPERTY PAGE — WHITE & GOLD LUXURY THEME ===== */
+
+.addprop-page {
+  background: #f9f7f2;
+  min-height: 80vh;
+}
+
+.addprop-hero {
+  background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80');
+}
+
+.addprop-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.addprop-section {
+  padding: 3.5rem 0 5rem;
+}
+
+/* ══════════════════════════════════════════
+   STEPPER
+   Fix: steps get active XOR done, never both.
+   Mobile: labels hidden, shorter connector lines.
+══════════════════════════════════════════ */
+.addprop-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  gap: 0;
+  flex-wrap: nowrap; /* prevent orphaned rows */
+  overflow-x: auto;  /* graceful scroll on very small screens */
+  padding-bottom: 0.25rem;
+}
+
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.stepper-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8e4dc;
+  color: #9aa4b5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+/* active = current step only */
+.stepper-step.active .stepper-circle {
+  background: linear-gradient(135deg, #c9922a, #e5b84a);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(201, 146, 42, 0.30);
+}
+
+/* done = completed steps only — no conflict with active */
+.stepper-step.done .stepper-circle {
+  background: linear-gradient(135deg, #1a2b3c, #243548);
+  color: #e5c96e;
+}
+
+.stepper-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #9aa4b5;
+  white-space: nowrap;
+}
+
+.stepper-step.active .stepper-label,
+.stepper-step.done .stepper-label {
+  color: #1a2b3c;
+}
+
+.stepper-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(201,146,42,0.20), rgba(201,146,42,0.10));
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   FORM SHELL
+══════════════════════════════════════════ */
+.addprop-form {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(26, 43, 60, 0.08);
+  border: 1px solid rgba(201, 146, 42, 0.10);
+  overflow: hidden;
+}
+
+.addprop-step-panel {
+  padding: 2.5rem;
+}
+
+.step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(201, 146, 42, 0.15);
+}
+
+/* ══════════════════════════════════════════
+   FORM GRID
+   Fix: span 2 guarded up to 767px (not 700px)
+   so tablets don't overflow.
+══════════════════════════════════════════ */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group.full {
+  grid-column: span 2;
+}
+
+.form-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6a7a8e;
+}
+
+/* ══════════════════════════════════════════
+   INPUTS
+══════════════════════════════════════════ */
+.form-input,
+.form-select,
+.form-textarea {
+  border: 1.5px solid #e0e8f0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #1a2b3c;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  background: #fafafa;
+  appearance: none;
+  -webkit-appearance: none;
+  resize: none;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6880' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #c9922a;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(201, 146, 42, 0.08);
+}
+
+/* Error state for inputs */
+.form-input.input-error,
+.form-select.input-error,
+.form-textarea.input-error {
+  border-color: #e05252;
+  background: #fff8f8;
+}
+
+.form-input.input-error:focus,
+.form-select.input-error:focus,
+.form-textarea.input-error:focus {
+  box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.10);
+}
+
+/* Inline field-level error message */
+.field-error {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e05252;
+  margin-top: -0.25rem;
+}
+
+/* ══════════════════════════════════════════
+   RADIO GROUP
+══════════════════════════════════════════ */
+.radio-group {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  border: 1.5px solid #e0e8f0;
+  border-radius: 50px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4a5a70;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.radio-label.active {
+  background: linear-gradient(135deg, #1a2b3c, #243548);
+  border-color: #1a2b3c;
+  color: #e5c96e;
+}
+
+/* ══════════════════════════════════════════
+   PHOTO UPLOAD
+   Fix: real <input type="file"> is hidden;
+   upload area is the clickable target.
+   Preview grid + remove button added.
+══════════════════════════════════════════ */
+.photo-upload-area {
+  border: 2px dashed rgba(201, 146, 42, 0.30);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #fffbf3;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+
+.photo-upload-area:hover,
+.photo-upload-area:focus-visible {
+  border-color: #c9922a;
+  background: #fff8ec;
+  outline: none;
+}
+
+.photo-upload-icon {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+}
+
+.photo-upload-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a2b3c;
+  margin-bottom: 0.5rem;
+}
+
+.photo-upload-sub {
+  font-size: 0.85rem;
+  color: #7a8a9e;
+  margin-bottom: 1.2rem;
+}
+
+/* Thumbnail preview strip */
+.photo-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.8rem;
+  align-items: flex-start;
+}
+
+.photo-thumb-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid rgba(201, 146, 42, 0.20);
+}
+
+.photo-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(26, 43, 60, 0.75);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.photo-thumb-remove:hover {
+  background: #e05252;
+}
+
+.photo-count-label {
+  width: 100%;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #c9922a;
+  margin: 0.25rem 0 0;
+}
+
+/* ══════════════════════════════════════════
+   AMENITIES
+   Fix: 4 columns on desktop (was 5 — text clipped).
+   2 columns on mobile preserved.
+══════════════════════════════════════════ */
+.amenities-form-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.amenities-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* was 5 — caused text clipping */
+  gap: 0.8rem;
+}
+
+.amenity-checkbox {
+  border: 1.5px solid #e0e8f0;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4a5a70;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.amenity-checkbox.checked {
+  background: #fffbf3;
+  border-color: #c9922a;
+  color: #c9922a;
+}
+
+.amenity-check-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.amenity-checkbox.checked .amenity-check-indicator {
+  background: linear-gradient(135deg, #c9922a, #e5b84a);
+  border-color: #c9922a;
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════
+   REVIEW
+══════════════════════════════════════════ */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.review-block {
+  background: #fffbf3;
+  border-radius: 14px;
+  padding: 1.5rem;
+  border: 1px solid rgba(201, 146, 42, 0.10);
+}
+
+.review-block.full {
+  grid-column: span 2;
+}
+
+.review-block-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c9922a;
+  margin-bottom: 1rem;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(201, 146, 42, 0.10);
+  font-size: 0.88rem;
+  gap: 1rem;
+}
+
+.review-row span {
+  color: #7a8a9e;
+  flex-shrink: 0;
+}
+
+.review-row strong {
+  color: #1a2b3c;
+  text-align: right;
+  word-break: break-word;
+}
+
+.review-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.review-amenity-tag {
+  background: linear-gradient(135deg, #c9922a, #e5b84a);
+  color: #fff;
+  border-radius: 50px;
+  padding: 0.32rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Review photo strip */
+.review-photo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.review-photo-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1.5px solid rgba(201, 146, 42, 0.20);
+}
+
+/* ══════════════════════════════════════════
+   AGREE CHECKBOX
+   Fix: now a fully controlled React element.
+   Error state styling added.
+══════════════════════════════════════════ */
+.review-agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+  color: #4a5a70;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.review-agree input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #c9922a;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.review-agree.agree-error {
+  color: #e05252;
+}
+
+.agree-field-error {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION BAR
+══════════════════════════════════════════ */
+.addprop-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem;
+  border-top: 1px solid rgba(201, 146, 42, 0.12);
+  background: #fffbf3;
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+.btn-addprop-gold {
+  background: linear-gradient(135deg, #c9922a 0%, #e5b84a 50%, #c9922a 100%);
+  background-size: 200% auto;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.82rem 2rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background-position 0.3s ease, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(201, 146, 42, 0.28);
+}
+
+.btn-addprop-gold:hover {
+  background-position: right center;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(201, 146, 42, 0.40);
+}
+
+.btn-addprop-outline {
+  background: transparent;
+  border: 1.5px solid #1a2b3c;
+  color: #1a2b3c;
+  border-radius: 50px;
+  padding: 0.82rem 2rem;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  display: inline-block; /* so span version works too */
+  line-height: 1;
+}
+
+.btn-addprop-outline:hover {
+  background: #1a2b3c;
+  color: #e5c96e;
+}
+
+/* ══════════════════════════════════════════
+   SUCCESS SCREEN
+══════════════════════════════════════════ */
+.addprop-success {
+  max-width: 500px;
+  margin: 5rem auto;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 12px 50px rgba(26, 43, 60, 0.10);
+  border: 1px solid rgba(201, 146, 42, 0.12);
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 1rem;
+}
+
+.success-sub {
+  font-size: 1rem;
+  color: #5a6a80;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — TABLET  (≤ 767px)
+   Fix: breakpoint raised from 700 → 767px
+   so the 701–767px gap no longer overflows.
+   form-group.full span guard moved here too.
+══════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .form-grid-2          { grid-template-columns: 1fr; }
+  .form-group.full      { grid-column: span 1; }  /* guard for tablet range */
+  .review-grid          { grid-template-columns: 1fr; }
+  .review-block.full    { grid-column: span 1; }
+  .amenities-checkbox-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .addprop-step-panel   { padding: 1.5rem; }
+  .addprop-nav          { padding: 1.25rem 1.5rem; gap: 0.75rem; }
+  .addprop-nav .btn-addprop-gold,
+  .addprop-nav .btn-addprop-outline { flex: 1; text-align: center; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — MOBILE  (≤ 480px)
+   Fix: stepper labels hidden so all 4 circles
+   fit on one line without wrapping.
+══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .stepper-label  { display: none; }
+  .stepper-line   { width: 20px; margin: 0 0.25rem; }
+  .stepper-circle { width: 32px; height: 32px; font-size: 0.78rem; }
+
+  .step-title     { font-size: 1.25rem; }
+  .addprop-stepper { justify-content: center; padding-bottom: 0; }
+}

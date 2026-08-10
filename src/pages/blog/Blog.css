@@ -1,0 +1,279 @@
+/* ===== BLOG PAGE — WHITE & GOLD LUXURY THEME ===== */
+/* Fixes applied:
+     #7  — Uniform padding on .blog-featured-content at ≤1000px
+     #8  — .blog-category-tag scoped within position:relative parents (explicit comment)
+*/
+
+.blog-page {}
+
+.blog-hero {
+  background-image: url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=1400&q=80');
+}
+
+.blog-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.blog-section {
+  background: #f9f7f2;
+  padding: 4rem 0 5rem;
+}
+
+/* ── Featured ── */
+.blog-featured {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(26, 43, 60, 0.07);
+  border: 1px solid rgba(201, 146, 42, 0.10);
+  margin-bottom: 3.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+}
+
+.blog-featured:hover {
+  box-shadow: 0 16px 60px rgba(201, 146, 42, 0.14);
+}
+
+/* Issue #8: position:relative is explicitly declared here so .blog-category-tag's
+   absolute positioning is always scoped correctly to this container */
+.blog-featured-img-wrap {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.blog-featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.blog-featured:hover .blog-featured-img {
+  transform: scale(1.04);
+}
+
+/* Issue #8: tag uses absolute positioning — parent (.blog-featured-img-wrap
+   and .blog-card-img-wrap) must be position:relative, which is enforced above
+   and below. This keeps the tag anchored even if surrounding layout changes. */
+.blog-category-tag {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  background: linear-gradient(135deg, #c9922a, #e5b84a);
+  color: #fff;
+  border-radius: 50px;
+  padding: 0.32rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blog-featured-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 2.5rem 2.5rem 0;
+}
+
+.blog-meta {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: #7a8a9e;
+  margin-bottom: 1.2rem;
+}
+
+.blog-featured-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: #1a2b3c;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.blog-featured-excerpt {
+  font-size: 1rem;
+  color: #4a5a70;
+  line-height: 1.75;
+  margin-bottom: 1.8rem;
+}
+
+.btn-blog-read {
+  background: linear-gradient(135deg, #1a2b3c, #243548);
+  color: #e5c96e;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  width: fit-content;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 12px rgba(26, 43, 60, 0.18);
+}
+
+.btn-blog-read:hover {
+  background: linear-gradient(135deg, #243548, #2e4260);
+  transform: translateY(-1px);
+}
+
+/* ── Blog Grid ── */
+.blog-grid-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 2rem;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+
+.blog-card {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(26, 43, 60, 0.06);
+  border: 1px solid rgba(201, 146, 42, 0.08);
+  cursor: pointer;
+  transition: transform 0.28s, box-shadow 0.28s;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(201, 146, 42, 0.14);
+}
+
+/* Issue #8: position:relative declared explicitly so .blog-category-tag stays scoped */
+.blog-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.blog-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.blog-card:hover .blog-card-img {
+  transform: scale(1.05);
+}
+
+.blog-card-cat {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+}
+
+.blog-card-body {
+  padding: 1.4rem;
+}
+
+.blog-card-meta {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.78rem;
+  color: #7a8a9e;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.blog-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a2b3c;
+  line-height: 1.3;
+  margin-bottom: 0.7rem;
+}
+
+.blog-card-excerpt {
+  font-size: 0.86rem;
+  color: #5a6a80;
+  line-height: 1.65;
+  margin-bottom: 1.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.btn-blog-card-read {
+  background: none;
+  border: none;
+  color: #c9922a;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-blog-card-read:hover { color: #1a2b3c; }
+
+/* ── Empty State ── */
+.blog-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px dashed rgba(201, 146, 42, 0.25);
+}
+
+.blog-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.blog-empty-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2b3c;
+  margin-bottom: 1rem;
+}
+
+.blog-empty-text {
+  font-size: 1rem;
+  color: #5a6a80;
+  line-height: 1.75;
+  max-width: 480px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1000px) {
+  .blog-featured { grid-template-columns: 1fr; }
+  .blog-featured-img-wrap { height: 280px; }
+
+  /* Issue #7: was "padding: 2rem 2rem 2rem 0" which left padding-left: 0 on mobile.
+     Fixed to uniform 2rem on all sides so text is never flush against the edge. */
+  .blog-featured-content { padding: 2rem; }
+
+  .blog-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .blog-grid { grid-template-columns: 1fr; }
+}
