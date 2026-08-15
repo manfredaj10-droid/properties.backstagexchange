@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import './PropertyDetail.css';
 
 // ─── Static detail images (first slot replaced by prop.img at runtime) ───────
+// ─── Fallback detail images ───────────────────────────────────────────────────
+// Used only when the API does not provide enough property photos.
 const DETAIL_IMAGES = [
   'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=85',
   'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
@@ -10,40 +12,149 @@ const DETAIL_IMAGES = [
   'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&q=80',
 ];
 
-const AMENITIES = [
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 12C4 9 6 8 9 9C12 10 14 12 16 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M2 15C4 12 6 11 9 12C12 13 14 15 16 15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="9" cy="5" r="2" stroke="currentColor" strokeWidth="1.3"/><path d="M9 7V10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>), label: 'Infinity Pool' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 11C4 8 6 7 9 8C12 9 14 11 16 11" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M2 14C4 11 6 10 9 11C12 12 14 14 16 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M6 7C7 4 9 3 11 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>), label: 'Sea View' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L15 5V9C15 12.5 12 15.5 9 17C6 15.5 3 12.5 3 9V5L9 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M6.5 9L8.5 11L11.5 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>), label: '24×7 Security' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L15 10H12L15 14H3L6 10H3L9 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><line x1="9" y1="14" x2="9" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>), label: 'Tropical Garden' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="9" y1="9" x2="14" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><rect x="14" y="7" width="2" height="4" rx="1" stroke="currentColor" strokeWidth="1.2"/><rect x="16" y="7.5" width="1.5" height="3" rx="0.5" stroke="currentColor" strokeWidth="1.1"/><line x1="9" y1="9" x2="4" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><rect x="2" y="7" width="2" height="4" rx="1" stroke="currentColor" strokeWidth="1.2"/><rect x="0.5" y="7.5" width="1.5" height="3" rx="0.5" stroke="currentColor" strokeWidth="1.1"/><circle cx="9" cy="6" r="1.5" stroke="currentColor" strokeWidth="1.1"/></svg>), label: 'Private Gym' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 11C5 8.5 8 7 9 7C10 7 13 8.5 15 11" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M6 14C7 12.5 8 12 9 12C10 12 11 12.5 12 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="9" cy="15.5" r="1" fill="currentColor"/><path d="M0.5 8C2.5 5 5.5 3 9 3C12.5 3 15.5 5 17.5 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>), label: 'High-Speed WiFi' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C9 2 12 5 12 8C12 8 13.5 6.5 13.5 5C15.5 7 16 9.5 16 11C16 14.3 12.9 17 9 17C5.1 17 2 14.3 2 11C2 7.5 5 4 9 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M9 17C9 17 7 14.5 9 12.5C9 12.5 9 14 10.5 14.5C11 13 10 11.5 10 11.5C12 12.5 12 14 11.5 15.5" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>), label: 'BBQ Terrace' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.3"/><path d="M7 13V6H10C11.7 6 13 7.3 13 9C13 10.7 11.7 12 10 12H7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>), label: 'Private Parking' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 15C9 15 3 12 3 7C3 4.5 5.5 3 8 4C10.5 5 12 7 12 7C12 7 15 5 15 8C15 12 9 15 9 15Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><line x1="9" y1="15" x2="9" y2="10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>), label: 'Landscaped Grounds' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M2 7H16M6 4V7M12 4V7M6 11V14M12 11V14M2 11H16" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/></svg>), label: 'Home Theatre' },
+// ─── Generic amenity icon ────────────────────────────────────────────────────
+// Keeps the existing amenity-card design without changing your CSS.
+const DEFAULT_AMENITY_ICON = (
+  <svg  width="18"  height="18"  viewBox="0 0 18 18"  fill="none">
+    <path  d="M3 9.5L9 3L15 9.5V15H3V9.5Z"  stroke="currentColor"  strokeWidth="1.3"  strokeLinejoin="round"/>
+    <path   d="M7 15V10H11V15"   stroke="currentColor"   strokeWidth="1.3" />
+  </svg>
+);
+
+// ─── Helpers for API data ─────────────────────────────────────────────────────
+const getApiData = (prop) => prop?.apiData || {};
+const parseApiArray = (value) => {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // Not JSON — treat comma-separated text as a list.
+    }
+
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const getPropertyDescription = (prop) => {
+  const api = getApiData(prop);
+  return (
+    api.description ||
+    api.property_description ||
+    api.propertyDescription ||
+    api.about ||
+    api.details ||
+    ''
+  );
+};
+
+const getPropertyAmenities = (prop) => {
+  const api = getApiData(prop);
+
+  const raw =
+    api.amenities ||
+    api.amenity ||
+    api.features ||
+    api.facilities ||
+    [];
+
+  return parseApiArray(raw);
+};
+
+const getPropertyPhotos = (prop) => {
+  const api = getApiData(prop);
+
+  let photos = [];
+
+  if (Array.isArray(api.photos)) {
+    photos = api.photos;
+  } else if (typeof api.photos === 'string' && api.photos.trim()) {
+    try {
+      const parsed = JSON.parse(api.photos);
+      if (Array.isArray(parsed)) {
+        photos = parsed;
+      } else {
+        photos = [api.photos];
+      }
+    } catch {
+      photos = [api.photos];
+    }
+  }
+
+  return photos.filter(
+    (photo) => typeof photo === 'string' && photo.trim() !== ''
+  );
+};
+
+// ─── Fallback nearby places ──────────────────────────────────────────────────
+// Kept only when the API doesn't provide nearby information.
+const DEFAULT_NEARBY = [
+  {
+    label: 'Calangute Beach',
+    dist: '200 m',
+  },
+  {
+    label: 'Goa International Airport',
+    dist: '38 km',
+  },
+  {
+    label: 'Apollo Clinic',
+    dist: '2.1 km',
+  },
+  {
+    label: 'Market & Grocery',
+    dist: '600 m',
+  },
+  {
+    label: 'Fine Dining Strip',
+    dist: '400 m',
+  },
+  {
+    label: 'Our Lady of Hope Church',
+    dist: '900 m',
+  },
 ];
 
-const NEARBY = [
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="2" y1="14" x2="16" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M9 5L5 13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M9 5C9 5 12 7 11 10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M4 7C5.5 5.5 8 5 9 5C10 5 12 5.5 13.5 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="14" cy="5" r="2" stroke="currentColor" strokeWidth="1.2"/></svg>), label: 'Calangute Beach',          dist: '200 m'  },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M10.5 3.5C11.5 2.5 13 2.5 14 3.5C15 4.5 15 6 14 7L10.5 10.5L12 15.5L10.5 17L8 12.5L5 15.5L5 17L3.5 15.5L3 14L4.5 14L7.5 11L3 8.5L4.5 7L9.5 8.5L10.5 3.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>), label: 'Goa International Airport', dist: '38 km'  },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="12" rx="1" stroke="currentColor" strokeWidth="1.3"/><path d="M7 4V2H11V4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><line x1="9" y1="7" x2="9" y2="13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="6" y1="10" x2="12" y2="10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>), label: 'Apollo Clinic',             dist: '2.1 km' },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 3H4L6.5 12H14L16 6H5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/><circle cx="7" cy="14.5" r="1.5" stroke="currentColor" strokeWidth="1.2"/><circle cx="13" cy="14.5" r="1.5" stroke="currentColor" strokeWidth="1.2"/></svg>), label: 'Market & Grocery',          dist: '600 m'  },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="5" y1="3" x2="5" y2="15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M3 3V8C3 9.1 3.9 10 5 10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M7 3V8C7 9.1 6.1 10 5 10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M12 3C12 3 14 5 14 8V15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M14 7C14 7 12 8 12 9.5V15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>), label: 'Fine Dining Strip',         dist: '400 m'  },
-  { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="9" width="12" height="7" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M3 9L9 4L15 9" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><line x1="9" y1="2" x2="9" y2="5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><line x1="7.5" y1="3.5" x2="10.5" y2="3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><rect x="7" y="12" width="4" height="4" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>), label: 'Our Lady of Hope Church',   dist: '900 m'  },
+// ─── Fallback specifications ─────────────────────────────────────────────────
+const DEFAULT_SPECS = [
+  ['Plot Area', 'Not specified'],
+  ['Built-up Area', 'Not specified'],
+  ['Floor Count', 'Not specified'],
+  ['Year Built', 'Not specified'],
+  ['Furnishing', 'Not specified'],
+  ['Parking', 'Not specified'],
+  ['Flooring', 'Not specified'],
+  ['Water Supply', 'Not specified'],
+  ['Power Backup', 'Not specified'],
+  ['RERA No.', 'Not specified'],
 ];
 
-const SPECS = [
-  ['Plot Area',    '6,200 sq. ft.'],
-  ['Built-up Area','3,800 sq. ft.'],
-  ['Floor Count',  'G+2'],
-  ['Year Built',   '2021'],
-  ['Furnishing',   'Fully Furnished'],
-  ['Parking',      '2 Covered Bays'],
-  ['Flooring',     'Italian Marble'],
-  ['Water Supply', '24 hr + Borewell'],
-  ['Power Backup', '100% Generator'],
-  ['RERA No.',     'GOA/RERA/2021/0048'],
-];
+const getPropertySpecs = (prop) => {
+  const api = getApiData(prop);
+
+  return [
+    ['Plot Area', api.plot_area || api.plotArea],
+    ['Built-up Area', api.built_up_area || api.builtUpArea || prop.sqft],
+    ['Floor Count', api.floor_count || api.floorCount],
+    ['Year Built', api.year_built || api.yearBuilt],
+    ['Furnishing', api.furnishing],
+    ['Parking', api.parking],
+    ['Flooring', api.flooring],
+    ['Water Supply', api.water_supply || api.waterSupply],
+    ['Power Backup', api.power_backup || api.powerBackup],
+    ['RERA No.', api.rera_no || api.reraNumber || api.rera],
+  ].map(([label, value], index) => [
+    label,
+    value || DEFAULT_SPECS[index][1],
+  ]);
+};
 
 const TABS = ['Overview', 'Amenities', 'Nearby', 'Specs'];
 
@@ -124,88 +235,192 @@ const GalleryModal = ({ images, galleryIdx, setGalleryIdx, onClose, propTitle })
 };
 
 // ─── Tab Panels (stable components, defined outside parent) ──────────────────
-const OverviewPanel = ({ prop, isRent }) => (
-  <div className="pd-tab-content tab-enter">
-    <div className="pd-overview-badges">
-      <span className={`pd-badge pd-badge--type ${isRent ? 'pd-badge--rent' : 'pd-badge--sale'}`}>
-        {isRent ? 'For Rent' : 'For Sale'}
-      </span>
-      <span className="pd-badge pd-badge--gold">RERA Verified</span>
-      <span className="pd-badge pd-badge--glass">{prop.category || 'Luxury Villa'}</span>
-    </div>
-    <h2 className="pd-section-heading">About this Property</h2>
-    <p className="pd-body-text">
-      Nestled along the sun-kissed shores of {prop.location}, this exceptional{' '}
-      {prop.category?.toLowerCase() || 'villa'} represents the pinnacle of Goan coastal living.
-      Designed by award-winning architects to harmonise Portuguese heritage with contemporary luxury,
-      every surface tells a story of craft and intention.
-    </p>
-    <p className="pd-body-text">
-      The property features sweeping Arabian Sea panoramas, a private infinity pool that dissolves into
-      the horizon, and hand-curated interiors finished in Italian marble. RERA approved with a clear
-      title deed — ready for immediate possession.
-    </p>
-    <div className="pd-highlights-strip">
-      {['RERA Approved', 'Ready Possession', 'Clear Title Deed', 'Vastu Compliant', 'Verified Seller'].map(h => (
-        <div key={h} className="pd-highlight-chip">
-          <span className="pd-check"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 6.5L6 8.5L9.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg></span> {h}
-        </div>
-      ))}
-    </div>
-  </div>
-);
+const OverviewPanel = ({ prop, isRent }) => {
+  const description = getPropertyDescription(prop);
 
-const AmenitiesPanel = () => (
-  <div className="pd-tab-content tab-enter">
-    <h2 className="pd-section-heading">Property Amenities</h2>
-    <div className="pd-amenities-grid">
-      {AMENITIES.map((a) => (
-        <div key={a.label} className="pd-amenity-card">
-          <span className="pd-amenity-icon" aria-hidden="true">{a.icon}</span>
-          <span className="pd-amenity-label">{a.label}</span>
-        </div>
-      ))}
+  const fallbackDescription = `Nestled in ${prop.location}, this exceptional ${
+    prop.category?.toLowerCase() || 'property'
+  } offers a distinctive opportunity for comfortable Goan living. The property combines its location, generous proportions and thoughtfully planned spaces to create an attractive residential experience.`;
+
+  return (
+    <div className="pd-tab-content tab-enter">
+      <div className="pd-overview-badges">
+        <span
+          className={`pd-badge pd-badge--type ${
+            isRent ? 'pd-badge--rent' : 'pd-badge--sale'
+          }`}
+        >
+          {isRent ? 'For Rent' : 'For Sale'}
+        </span>
+
+        <span className="pd-badge pd-badge--gold">
+          {prop.highlight || 'Verified Property'}
+        </span>
+
+        <span className="pd-badge pd-badge--glass">
+          {prop.category || 'Property'}
+        </span>
+      </div>
+
+      <h2 className="pd-section-heading">About this Property</h2>
+
+      {description ? (
+        <p className="pd-body-text">{description}</p>
+      ) : (
+        <p className="pd-body-text">{fallbackDescription}</p>
+      )}
+
+      <div className="pd-highlights-strip">
+        {[
+          prop.highlight || 'Verified Property',
+          prop.type === 'rent' ? 'Available for Rent' : 'Available for Sale',
+          prop.category || 'Property',
+          prop.bhk || 'BHK Available',
+          prop.sqft || 'Area Available',
+        ].map((h) => (
+          <div key={h} className="pd-highlight-chip">
+            <span className="pd-check">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+              >
+                <circle
+                  cx="6.5"
+                  cy="6.5"
+                  r="5.5"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                />
+                <path
+                  d="M4 6.5L6 8.5L9.5 5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            {h}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+const AmenitiesPanel = ({ prop }) => {
+  const amenities = getPropertyAmenities(prop);
+
+  return (
+    <div className="pd-tab-content tab-enter">
+      <h2 className="pd-section-heading">Property Amenities</h2>
+
+      <div className="pd-amenities-grid">
+        {amenities.length > 0 ? (
+          amenities.map((amenity, index) => {
+            const label =
+              typeof amenity === 'string'
+                ? amenity
+                : amenity?.name ||
+                  amenity?.label ||
+                  amenity?.title ||
+                  `Amenity ${index + 1}`;
+
+            return (
+              <div key={`${label}-${index}`} className="pd-amenity-card">
+                <span className="pd-amenity-icon" aria-hidden="true">
+                  {DEFAULT_AMENITY_ICON}
+                </span>
+
+                <span className="pd-amenity-label">
+                  {label}
+                </span>
+              </div>
+            );
+          })
+        ) : (
+          <div className="pd-amenity-card">
+            <span className="pd-amenity-icon" aria-hidden="true">
+              {DEFAULT_AMENITY_ICON}
+            </span>
+
+            <span className="pd-amenity-label">
+              Amenities not specified
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const NearbyPanel = ({ location }) => (
   <div className="pd-tab-content tab-enter">
     <h2 className="pd-section-heading">Neighbourhood &amp; Surroundings</h2>
+
     <div className="pd-nearby-list" role="list">
-      {NEARBY.map((n) => (
-        <div key={n.label} className="pd-nearby-row" role="listitem">
-          <span className="pd-nearby-icon" aria-hidden="true">{n.icon}</span>
-          <span className="pd-nearby-label">{n.label}</span>
-          <span className="pd-nearby-dist">{n.dist}</span>
-        </div>
-      ))}
+      <div className="pd-nearby-row" role="listitem">
+        <span className="pd-nearby-icon" aria-hidden="true">
+          📍
+        </span>
+
+        <span className="pd-nearby-label">
+          Property Location
+        </span>
+
+        <span className="pd-nearby-dist">
+          {location}
+        </span>
+      </div>
     </div>
+
     <div className="pd-map-block">
       <div className="pd-map-pin-wrap">
-        <span className="pd-map-pin-icon" aria-hidden="true"><svg width="13" height="16" viewBox="0 0 13 16" fill="none"><path d="M6.5 0C3.46 0 1 2.46 1 5.5C1 9.625 6.5 16 6.5 16C6.5 16 12 9.625 12 5.5C12 2.46 9.54 0 6.5 0zm0 7.5a2 2 0 110-4 2 2 0 010 4z" fill="currentColor" fillOpacity="0.7"/></svg></span>
+        <span className="pd-map-pin-icon" aria-hidden="true">
+          <svg
+            width="13"
+            height="16"
+            viewBox="0 0 13 16"
+            fill="none"
+          >
+            <path
+              d="M6.5 0C3.46 0 1 2.46 1 5.5C1 9.625 6.5 16 6.5 16C6.5 16 12 9.625 12 5.5C12 2.46 9.54 0 6.5 0zm0 7.5a2 2 0 110-4 2 2 0 010 4z"
+              fill="currentColor"
+              fillOpacity="0.7"
+            />
+          </svg>
+        </span>
+
         <div>
           <p className="pd-map-address">{location}</p>
-          <p className="pd-map-note">Interactive Google Maps available on live deployment</p>
+          <p className="pd-map-note">
+            Interactive Google Maps available on live deployment
+          </p>
         </div>
       </div>
     </div>
   </div>
 );
 
-const SpecsPanel = () => (
-  <div className="pd-tab-content tab-enter">
-    <h2 className="pd-section-heading">Architectural Specifications</h2>
-    <div className="pd-specs-table" role="table" aria-label="Property specifications">
-      {SPECS.map(([label, val], i) => (
-        <div key={label} className={`pd-spec-row${i % 2 === 0 ? ' pd-spec-row--shaded' : ''}`} role="row">
-          <span className="pd-spec-label" role="rowheader">{label}</span>
-          <span className="pd-spec-val">{val}</span>
-        </div>
-      ))}
+const SpecsPanel = ({ prop }) => {
+  const specs = getPropertySpecs(prop);
+
+  return (
+    <div className="pd-tab-content tab-enter">
+      <h2 className="pd-section-heading">  Architectural Specifications</h2>
+      <div className="pd-specs-table" role="table" aria-label="Property specifications">
+        {specs.map(([label, val], i) => (
+          <div  key={label}  className={`pd-spec-row${    i % 2 === 0 ? ' pd-spec-row--shaded' : ''  }`}  role="row">
+            <span className="pd-spec-label" role="rowheader">  {label}</span>
+            <span className="pd-spec-val">  {val}</span>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ─── Agent Info (shared between enquiry block and sticky card) ────────────────
 const AgentInfo = ({ agent, variant = 'dark' }) => {
@@ -260,7 +475,11 @@ const PropertyDetail = ({ property, onBack, onNavigate }) => {
   };
 
   // Build image list: prop's own image first, then fallback gallery for remaining slots
-  const images = prop.img
+const apiPhotos = getPropertyPhotos(prop);
+const images =
+  apiPhotos.length > 0
+    ? apiPhotos
+    : prop.img
     ? [prop.img, ...DETAIL_IMAGES.slice(1)]
     : DETAIL_IMAGES;
 
@@ -293,9 +512,9 @@ const PropertyDetail = ({ property, onBack, onNavigate }) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Overview':  return <OverviewPanel prop={prop} isRent={isRent} />;
-      case 'Amenities': return <AmenitiesPanel />;
+      case 'Amenities': return <AmenitiesPanel prop={prop} />;
       case 'Nearby':    return <NearbyPanel location={prop.location} />;
-      case 'Specs':     return <SpecsPanel />;
+      case 'Specs':     return <SpecsPanel prop={prop} />;
       default:          return null;
     }
   };

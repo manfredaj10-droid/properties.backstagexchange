@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './AddProperty.css';
 
 const steps = ['Basic Info', 'Location & Price', 'Photos & Amenities', 'Review & Submit'];
 
-// ─── Validation rules per step ────────────────────────────────────────────────
 const validateStep = (step, form, agreed) => {
   const errors = {};
 
@@ -27,21 +26,26 @@ const validateStep = (step, form, agreed) => {
   return errors;
 };
 
-// ─── Initial form state (single source of truth, easy to reset) ───────────────
 const INITIAL_FORM = {
   title: '', type: '', listing: 'For Sale', beds: '', baths: '', sqft: '',
   description: '', location: '', price: '', area: '',
   amenities: [], agentName: '', agentPhone: '', agentEmail: '',
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-const AddProperty = ({ onNavigate }) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [form,        setForm]        = useState(INITIAL_FORM);
-  const [agreed,      setAgreed]      = useState(false);
-  const [errors,      setErrors]      = useState({});
-  const [photos,      setPhotos]      = useState([]);
-  const [submitted,   setSubmitted]   = useState(false);
+const AddProperty = ({ onNavigate, listingsCount = 0, onAddListing }) => {
+  const [currentStep, setCurrentStep]     = useState(0);
+  const [form, setForm]                   = useState(INITIAL_FORM);
+  const [agreed, setAgreed]               = useState(false);
+  const [errors, setErrors]               = useState({});
+  const [photos, setPhotos]               = useState([]);
+  const [photoPreviews, setPhotoPreviews] = useState([]);
+  const [submitted, setSubmitted]         = useState(false);
+  const [isSubmitting, setIsSubmitting]   = useState(false);
+  const [apiError, setApiError]           = useState('');
+  const [isDragging, setIsDragging]       = useState(false);
+
+  // Local state to track additions accurately even if parent prop isn't updating
+  const [addedCount, setAddedCount]       = useState(listingsCount);
 
   const fileInputRef = useRef(null);
 
@@ -50,10 +54,26 @@ const AddProperty = ({ onNavigate }) => {
     'Sea View', 'WiFi', 'BBQ Area', 'Elevator', 'Balcony',
   ];
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
+  // Keep addedCount in sync if parent prop actually updates
+  useEffect(() => {
+    if (listingsCount > addedCount) {
+      setAddedCount(listingsCount);
+    }
+  }, [listingsCount, addedCount]);
+
+  // ── Sync File Previews & Cleanup Memory Leak ───────────────────────────────
+  useEffect(() => {
+    const urls = photos.map(file => URL.createObjectURL(file));
+    setPhotoPreviews(urls);
+
+    return () => {
+      urls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [photos]);
+
+  // ── Form Helpers ────────────────────────────────────────────────────────────
   const updateForm = (key, val) => {
     setForm(prev => ({ ...prev, [key]: val }));
-    // Clear the field's error on change
     if (errors[key]) setErrors(prev => { const e = { ...prev }; delete e[key]; return e; });
   };
 
@@ -66,14 +86,40 @@ const AddProperty = ({ onNavigate }) => {
     }));
   };
 
-  const handlePhotoChange = (e) => {
-    const files = Array.from(e.target.files).slice(0, 10);
-    setPhotos(files);
+  // ── Photo Upload Helpers ───────────────────────────────────────────────────
+  const processFiles = (newFiles) => {
+    setPhotos(prev => {
+      const combined = [...prev, ...newFiles];
+      return combined.slice(0, 10);
+    });
   };
 
-  const handlePhotoRemove = (index) => {
-    setPhotos(prev => prev.filter((_, i) => i !== index));
+  const handlePhotoChange = (e) => {
+    if (!e.target.files.length) return;
+    processFiles(Array.from(e.target.files));
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(Array.from(e.dataTransfer.files));
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handlePhotoRemove = useCallback((index) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index));
+  }, []);
 
   // ── Navigation ───────────────────────────────────────────────────────────────
   const handleNext = () => {
@@ -94,43 +140,100 @@ const AddProperty = ({ onNavigate }) => {
   };
 
   // ── Submit ───────────────────────────────────────────────────────────────────
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setApiError('');
     const stepErrors = validateStep(3, form, agreed);
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
       return;
     }
-    setSubmitted(true);
+
+    setIsSubmitting(true);
+
+    try {
+      const userId = localStorage.getItem('user_id') || '1';
+      
+      const formData = new FormData();
+      formData.append('user_id', userId);
+
+      Object.keys(form).forEach(key => {
+        if (key === 'amenities') {
+          formData.append('amenities', JSON.stringify(form.amenities));
+        } else {
+          formData.append(key, form[key]);
+        }
+      });
+
+      // Append image files using standard array key format
+      photos.forEach((file) => {
+        formData.append('photos[]', file);
+      });
+
+      const response = await fetch('http://localhost/backstage-api/add_property.php', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setAddedCount(prev => prev + 1); // Increment local count
+        if (onAddListing) {
+          onAddListing(data);
+        }
+        setSubmitted(true);
+      } else {
+        throw new Error(data.message || 'Failed to submit property.');
+      }
+    } catch (err) {
+      console.error('Submission error:', err);
+      setApiError(err.message || 'Server error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // ── Full reset ───────────────────────────────────────────────────────────────
-  const handleReset = () => {
+  // ── Reset Form ──────────────────────────────────────────────────────────────
+  const handleAddAnother = () => {
     setForm(INITIAL_FORM);
     setAgreed(false);
     setErrors({});
     setPhotos([]);
     setCurrentStep(0);
     setSubmitted(false);
+    setApiError('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // ── Success screen ───────────────────────────────────────────────────────────
+  // ── Success Screen ───────────────────────────────────────────────────────────
   if (submitted) {
     return (
       <div className="addprop-page">
         <div className="addprop-success">
           <div className="success-icon">🎉</div>
-          <h2 className="success-title">Property Submitted!</h2>
+          <h2 className="success-title">
+            {addedCount <= 1 
+              ? 'Property Listing Created!' 
+              : `You have added ${addedCount} properties!`}
+          </h2>
+
           <p className="success-sub">
-            Your listing has been received. Our team will review and publish it within 24 hours.
+            {addedCount <= 1
+              ? 'Your first property is live. Add another property to showcase more of your portfolio.'
+              : 'Your listings are configured and ready to be viewed by potential clients.'}
           </p>
+
           <div className="success-actions">
-            <button className="btn-addprop-gold" onClick={handleReset}>
-              Submit Another Property
+            <button className="btn-addprop-gold" onClick={handleAddAnother}>
+              + Add Another Listing
             </button>
-            {onNavigate && (
-              <button className="btn-addprop-outline" onClick={() => onNavigate('properties')}>
-                Browse Listings
+            
+            {addedCount >= 2 && onNavigate && (
+              <button 
+                className="btn-addprop-outline" 
+                onClick={() => onNavigate('properties')}
+              >
+                View All Displayed Listings ({addedCount})
               </button>
             )}
           </div>
@@ -139,16 +242,14 @@ const AddProperty = ({ onNavigate }) => {
     );
   }
 
-  // ── Step class helper (active XOR done — never both) ────────────────────────
   const stepClass = (i) => {
-    if (i < currentStep)  return 'stepper-step done';
+    if (i < currentStep)   return 'stepper-step done';
     if (i === currentStep) return 'stepper-step active';
     return 'stepper-step';
   };
 
   return (
     <div className="addprop-page">
-      {/* Hero */}
       <div className="page-hero addprop-hero">
         <div className="page-hero-overlay"></div>
         <div className="page-hero-content" style={{ paddingLeft: '5vw', paddingBottom: '3rem' }}>
@@ -160,7 +261,7 @@ const AddProperty = ({ onNavigate }) => {
       <section className="addprop-section">
         <div className="addprop-container">
 
-          {/* ── Stepper ── */}
+          {/* Stepper */}
           <div className="addprop-stepper" role="list" aria-label="Form steps">
             {steps.map((step, i) => (
               <div key={i} className={stepClass(i)} role="listitem" aria-current={i === currentStep ? 'step' : undefined}>
@@ -173,9 +274,15 @@ const AddProperty = ({ onNavigate }) => {
             ))}
           </div>
 
+          {apiError && (
+            <div className="api-error-banner" style={{ color: '#d9534f', marginBottom: '1rem', textAlign: 'center' }} role="alert">
+              {apiError}
+            </div>
+          )}
+
           <form className="addprop-form" onSubmit={handleSubmit} noValidate>
 
-            {/* ── Step 1: Basic Info ── */}
+            {/* Step 1: Basic Info */}
             {currentStep === 0 && (
               <div className="addprop-step-panel">
                 <h2 className="step-title">Basic Property Information</h2>
@@ -190,8 +297,10 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="e.g. Seabreeze Infinity Villa"
                       value={form.title}
                       onChange={e => updateForm('title', e.target.value)}
+                      aria-invalid={!!errors.title}
+                      aria-describedby={errors.title ? 'err-title' : undefined}
                     />
-                    {errors.title && <span className="field-error">{errors.title}</span>}
+                    {errors.title && <span id="err-title" className="field-error">{errors.title}</span>}
                   </div>
 
                   <div className="form-group">
@@ -201,13 +310,15 @@ const AddProperty = ({ onNavigate }) => {
                       className={`form-select${errors.type ? ' input-error' : ''}`}
                       value={form.type}
                       onChange={e => updateForm('type', e.target.value)}
+                      aria-invalid={!!errors.type}
+                      aria-describedby={errors.type ? 'err-type' : undefined}
                     >
                       <option value="">Select Type</option>
                       {['Villa', 'Apartment', 'Cottage', 'Bungalow', 'Plot', 'Commercial'].map(v => (
                         <option key={v}>{v}</option>
                       ))}
                     </select>
-                    {errors.type && <span className="field-error">{errors.type}</span>}
+                    {errors.type && <span id="err-type" className="field-error">{errors.type}</span>}
                   </div>
 
                   <div className="form-group">
@@ -267,15 +378,17 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="Describe the key features, views, and highlights of this property..."
                       value={form.description}
                       onChange={e => updateForm('description', e.target.value)}
+                      aria-invalid={!!errors.description}
+                      aria-describedby={errors.description ? 'err-desc' : undefined}
                     />
-                    {errors.description && <span className="field-error">{errors.description}</span>}
+                    {errors.description && <span id="err-desc" className="field-error">{errors.description}</span>}
                   </div>
 
                 </div>
               </div>
             )}
 
-            {/* ── Step 2: Location & Price ── */}
+            {/* Step 2: Location & Price */}
             {currentStep === 1 && (
               <div className="addprop-step-panel">
                 <h2 className="step-title">Location & Pricing</h2>
@@ -290,8 +403,10 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="e.g. Calangute Beach Road, North Goa"
                       value={form.location}
                       onChange={e => updateForm('location', e.target.value)}
+                      aria-invalid={!!errors.location}
+                      aria-describedby={errors.location ? 'err-loc' : undefined}
                     />
-                    {errors.location && <span className="field-error">{errors.location}</span>}
+                    {errors.location && <span id="err-loc" className="field-error">{errors.location}</span>}
                   </div>
 
                   <div className="form-group">
@@ -313,8 +428,10 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="e.g. 4.20 Cr or 85,000/mo"
                       value={form.price}
                       onChange={e => updateForm('price', e.target.value)}
+                      aria-invalid={!!errors.price}
+                      aria-describedby={errors.price ? 'err-price' : undefined}
                     />
-                    {errors.price && <span className="field-error">{errors.price}</span>}
+                    {errors.price && <span id="err-price" className="field-error">{errors.price}</span>}
                   </div>
 
                   <div className="form-group">
@@ -326,8 +443,10 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="Full Name"
                       value={form.agentName}
                       onChange={e => updateForm('agentName', e.target.value)}
+                      aria-invalid={!!errors.agentName}
+                      aria-describedby={errors.agentName ? 'err-agent' : undefined}
                     />
-                    {errors.agentName && <span className="field-error">{errors.agentName}</span>}
+                    {errors.agentName && <span id="err-agent" className="field-error">{errors.agentName}</span>}
                   </div>
 
                   <div className="form-group">
@@ -339,8 +458,10 @@ const AddProperty = ({ onNavigate }) => {
                       placeholder="+91 XXXXX XXXXX"
                       value={form.agentPhone}
                       onChange={e => updateForm('agentPhone', e.target.value)}
+                      aria-invalid={!!errors.agentPhone}
+                      aria-describedby={errors.agentPhone ? 'err-phone' : undefined}
                     />
-                    {errors.agentPhone && <span className="field-error">{errors.agentPhone}</span>}
+                    {errors.agentPhone && <span id="err-phone" className="field-error">{errors.agentPhone}</span>}
                   </div>
 
                   <div className="form-group full">
@@ -359,12 +480,11 @@ const AddProperty = ({ onNavigate }) => {
               </div>
             )}
 
-            {/* ── Step 3: Photos & Amenities ── */}
+            {/* Step 3: Photos & Amenities */}
             {currentStep === 2 && (
               <div className="addprop-step-panel">
                 <h2 className="step-title">Photos & Amenities</h2>
 
-                {/* Hidden real file input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -374,30 +494,31 @@ const AddProperty = ({ onNavigate }) => {
                   onChange={handlePhotoChange}
                 />
 
-                {/* Upload area */}
                 <div
-                  className="photo-upload-area"
+                  className={`photo-upload-area${isDragging ? ' dragging' : ''}`}
                   onClick={() => fileInputRef.current.click()}
-                  onKeyDown={e => e.key === 'Enter' && fileInputRef.current.click()}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current.click()}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
                   role="button"
                   tabIndex={0}
                   aria-label="Upload property photos"
                 >
                   <div className="photo-upload-icon">📷</div>
                   <p className="photo-upload-text">Drag & drop photos here, or click to browse</p>
-                  <p className="photo-upload-sub">Supported: JPG, PNG — Max 10 photos, 5 MB each</p>
+                  <p className="photo-upload-sub">Supported: JPG, PNG — Max 10 photos total</p>
                   <span className="btn-addprop-outline" style={{ pointerEvents: 'none' }}>
                     Choose Photos
                   </span>
                 </div>
 
-                {/* Photo preview thumbnails */}
                 {photos.length > 0 && (
                   <div className="photo-preview-grid">
-                    {photos.map((file, idx) => (
+                    {photoPreviews.map((src, idx) => (
                       <div key={idx} className="photo-thumb-wrap">
                         <img
-                          src={URL.createObjectURL(file)}
+                          src={src}
                           alt={`Preview ${idx + 1}`}
                           className="photo-thumb"
                         />
@@ -415,7 +536,6 @@ const AddProperty = ({ onNavigate }) => {
                   </div>
                 )}
 
-                {/* Amenities */}
                 <h3 className="amenities-form-heading">Select Available Amenities</h3>
                 <div className="amenities-checkbox-grid">
                   {amenityOptions.map(a => (
@@ -437,7 +557,7 @@ const AddProperty = ({ onNavigate }) => {
               </div>
             )}
 
-            {/* ── Step 4: Review & Submit ── */}
+            {/* Step 4: Review & Submit */}
             {currentStep === 3 && (
               <div className="addprop-step-panel">
                 <h2 className="step-title">Review Your Listing</h2>
@@ -487,14 +607,14 @@ const AddProperty = ({ onNavigate }) => {
                     </div>
                   </div>
 
-                  {photos.length > 0 && (
+                  {photoPreviews.length > 0 && (
                     <div className="review-block full">
-                      <h3 className="review-block-title">Photos ({photos.length})</h3>
+                      <h3 className="review-block-title">Photos ({photoPreviews.length})</h3>
                       <div className="review-photo-strip">
-                        {photos.map((file, idx) => (
+                        {photoPreviews.map((src, idx) => (
                           <img
                             key={idx}
-                            src={URL.createObjectURL(file)}
+                            src={src}
                             alt={`Upload ${idx + 1}`}
                             className="review-photo-thumb"
                           />
@@ -504,7 +624,6 @@ const AddProperty = ({ onNavigate }) => {
                   )}
                 </div>
 
-                {/* Terms agreement — fully controlled */}
                 <div className={`review-agree${errors.agreed ? ' agree-error' : ''}`}>
                   <input
                     type="checkbox"
@@ -514,20 +633,22 @@ const AddProperty = ({ onNavigate }) => {
                       setAgreed(e.target.checked);
                       if (errors.agreed) setErrors(prev => { const e = { ...prev }; delete e.agreed; return e; });
                     }}
+                    aria-invalid={!!errors.agreed}
+                    aria-describedby={errors.agreed ? 'err-agreed' : undefined}
                   />
                   <label htmlFor="agree">
                     I confirm that all information provided is accurate and I agree to the
-                    BackstageXchange Property listing terms.
+                    listing terms.
                   </label>
                 </div>
-                {errors.agreed && <span className="field-error agree-field-error">{errors.agreed}</span>}
+                {errors.agreed && <span id="err-agreed" className="field-error agree-field-error">{errors.agreed}</span>}
               </div>
             )}
 
-            {/* ── Navigation Buttons ── */}
+            {/* Navigation Buttons */}
             <div className="addprop-nav">
               {currentStep > 0 && (
-                <button type="button" className="btn-addprop-outline" onClick={handleBack}>
+                <button type="button" className="btn-addprop-outline" onClick={handleBack} disabled={isSubmitting}>
                   ← Previous
                 </button>
               )}
@@ -536,8 +657,8 @@ const AddProperty = ({ onNavigate }) => {
                   Continue →
                 </button>
               ) : (
-                <button type="submit" className="btn-addprop-gold">
-                  🚀 Submit Listing
+                <button type="submit" className="btn-addprop-gold" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : '🚀 Submit Listing'}
                 </button>
               )}
             </div>

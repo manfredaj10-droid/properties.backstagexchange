@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Properties.css';
+import {mapProperty} from '../../utils/propertyMapper';
 
 // ─── Spotlight content per category ─────────────────────────────────────────
 
@@ -94,96 +95,120 @@ const SPOTLIGHT_DATA = {
 };
 
 // ─── Property data ────────────────────────────────────────────────────────────
-const allProperties = [
-  {
-    id: 1,
-    badge: 'For Sale',
-    img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&q=80',
-    price: '₹ 4.20 Cr',
-    name: 'Seabreeze Infinity Villa',
-    location: 'Calangute Beach Road, North Goa',
-    beds: '5', baths: '4', sqft: '3,800',
-    type: 'Villa',
-    agent: 'SR', agentName: 'Sunita Rao',
-  },
-  {
-    id: 2,
-    badge: 'For Sale',
-    img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=700&q=80',
-    price: '₹ 2.85 Cr',
-    name: 'Palm Grove Eco Retreat',
-    location: 'Assagao, North Goa',
-    beds: '4', baths: '3', sqft: '2,950',
-    type: 'Villa',
-    agent: 'AK', agentName: 'Arjun Kamat',
-  },
-  {
-    id: 3,
-    badge: 'For Rent',
-    img: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=700&q=80',
-    price: '₹ 85,000/mo',
-    name: 'Candolim Beach Cottage',
-    location: 'Candolim, North Goa',
-    beds: '2', baths: '2', sqft: '980',
-    type: 'Cottage',
-    agent: 'RD', agentName: "Rohan D'Souza",
-  },
-  {
-    id: 4,
-    badge: 'For Sale',
-    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80',
-    price: '₹ 3.10 Cr',
-    name: 'Aguada Clifftop Bungalow',
-    location: 'Fort Aguada, Goa',
-    beds: '4', baths: '3', sqft: '2,600',
-    type: 'Villa',
-    agent: 'NK', agentName: 'Nisha Kumar',
-  },
-  {
-    id: 5,
-    badge: 'For Sale',
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&q=80',
-    price: '₹ 1.45 Cr',
-    name: 'Skyline Residences 3BHK',
-    location: 'Porvorim, North Goa',
-    beds: '3', baths: '2', sqft: '1,450',
-    type: 'Apartment',
-    agent: 'SR', agentName: 'Sunita Rao',
-  },
-  {
-    id: 6,
-    badge: 'For Rent',
-    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80',
-    price: '₹ 1.20L/mo',
-    name: 'Azure Heights Penthouse',
-    location: 'Margao, South Goa',
-    beds: '3', baths: '3', sqft: '1,800',
-    type: 'Penthouse',
-    agent: 'AK', agentName: 'Arjun Kamat',
-  },
-  {
-    id: 7,
-    badge: 'New Project',
-    img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&q=80',
-    price: '₹ 95 L',
-    name: 'Marina Bay Towers',
-    location: 'Panaji, Goa',
-    beds: '2', baths: '2', sqft: '1,100',
-    type: 'Apartment',
-    agent: 'NK', agentName: 'Nisha Kumar',
-  },
-  {
-    id: 8,
-    badge: 'For Sale',
-    img: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=700&q=80',
-    price: '₹ 5.50 Cr',
-    name: 'Sunrise Enclave Mega Villa',
-    location: 'Siolim, North Goa',
-    beds: '6', baths: '5', sqft: '5,200',
-    type: 'Villa',
-    agent: 'RD', agentName: "Rohan D'Souza",
-  },
-];
+// const allProperties = [
+//   {
+//     id: 1,
+//     badge: 'For Sale',
+//     img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&q=80',
+//     price: '₹ 4.20 Cr',
+//     name: 'Seabreeze Infinity Villa',
+//     location: 'Calangute Beach Road, North Goa',
+//     beds: '5', baths: '4', sqft: '3,800',
+//     type: 'Villa',
+//     agent: 'SR', agentName: 'Sunita Rao',
+//   },
+//   {
+//     id: 2,
+//     badge: 'For Sale',
+//     img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=700&q=80',
+//     price: '₹ 2.85 Cr',
+//     name: 'Palm Grove Eco Retreat',
+//     location: 'Assagao, North Goa',
+//     beds: '4', baths: '3', sqft: '2,950',
+//     type: 'Villa',
+//     agent: 'AK', agentName: 'Arjun Kamat',
+//   },
+//   {
+//     id: 3,
+//     badge: 'For Rent',
+//     img: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=700&q=80',
+//     price: '₹ 85,000/mo',
+//     name: 'Candolim Beach Cottage',
+//     location: 'Candolim, North Goa',
+//     beds: '2', baths: '2', sqft: '980',
+//     type: 'Cottage',
+//     agent: 'RD', agentName: "Rohan D'Souza",
+//   },
+//   {
+//     id: 4,
+//     badge: 'For Sale',
+//     img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80',
+//     price: '₹ 3.10 Cr',
+//     name: 'Aguada Clifftop Bungalow',
+//     location: 'Fort Aguada, Goa',
+//     beds: '4', baths: '3', sqft: '2,600',
+//     type: 'Villa',
+//     agent: 'NK', agentName: 'Nisha Kumar',
+//   },
+//   {
+//     id: 5,
+//     badge: 'For Sale',
+//     img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&q=80',
+//     price: '₹ 1.45 Cr',
+//     name: 'Skyline Residences 3BHK',
+//     location: 'Porvorim, North Goa',
+//     beds: '3', baths: '2', sqft: '1,450',
+//     type: 'Apartment',
+//     agent: 'SR', agentName: 'Sunita Rao',
+//   },
+//   {
+//     id: 6,
+//     badge: 'For Rent',
+//     img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80',
+//     price: '₹ 1.20L/mo',
+//     name: 'Azure Heights Penthouse',
+//     location: 'Margao, South Goa',
+//     beds: '3', baths: '3', sqft: '1,800',
+//     type: 'Penthouse',
+//     agent: 'AK', agentName: 'Arjun Kamat',
+//   },
+//   {
+//     id: 7,
+//     badge: 'New Project',
+//     img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&q=80',
+//     price: '₹ 95 L',
+//     name: 'Marina Bay Towers',
+//     location: 'Panaji, Goa',
+//     beds: '2', baths: '2', sqft: '1,100',
+//     type: 'Apartment',
+//     agent: 'NK', agentName: 'Nisha Kumar',
+//   },
+//   {
+//     id: 8,
+//     badge: 'For Sale',
+//     img: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=700&q=80',
+//     price: '₹ 5.50 Cr',
+//     name: 'Sunrise Enclave Mega Villa',
+//     location: 'Siolim, North Goa',
+//     beds: '6', baths: '5', sqft: '5,200',
+//     type: 'Villa',
+//     agent: 'RD', agentName: "Rohan D'Souza",
+//   },
+// ];
+
+const mapProperty = (p) => ({
+  id: p.id,
+  badge: p.listing,
+  img: Array.isArray(p.photos) && p.photos.length > 0
+    ? p.photos[0]
+    : '',
+  price: `₹ ${p.price}`,
+  name: p.title,
+  location: p.location,
+  beds: p.beds,
+  baths: p.baths,
+  sqft: p.sqft,
+  type: p.type,
+  agent: p.agent_name
+    ? p.agent_name
+        .split(' ')
+        .map(word => word[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'AG',
+  agentName: p.agent_name,
+});
 
 // ─── Shape normalizer ─────────────────────────────────────────────────────────
 //  Converts the flat card schema → the object shape PropertyDetail expects.
@@ -296,6 +321,31 @@ const Properties = ({ onViewDetail, initialCategory, initialFilters }) => {
   const [keyword,      setKeyword]      = useState('');
   const [locationQ,    setLocationQ]    = useState('');
   const [priceRange,   setPriceRange]   = useState('');
+  const [properties, setProperties] = useState([]);
+
+  useEffect(() => {
+      const fetchProperties = async () => {
+        try {
+          const response = await fetch(
+            'http://localhost/backstage-api/get_property.php'
+          );
+        
+          const data = await response.json();
+          if (data.success) {
+            const mappedProperties = data.properties.map(mapProperty);
+            console.log("Mapped properties:", mappedProperties);
+            setProperties(mappedProperties);
+          } else {
+            console.error(data.message);
+          }
+        } catch (error) {
+          console.error('Error fetching properties:', error);
+        }
+      };
+    
+      fetchProperties();
+    }, []);
+
 
   // ── React to category changes from Home ──────────────────────────────────
   useEffect(() => {
@@ -351,7 +401,7 @@ const Properties = ({ onViewDetail, initialCategory, initialFilters }) => {
   const hasActiveSearch = keyword || locationQ || priceRange;
 
   // ── Filter logic ─────────────────────────────────────────────────────────
-  const filtered = allProperties.filter(p => {
+  const filtered = properties.filter(p => {
     const matchBadge =
       filter === 'All' ||
       p.badge === filter ||

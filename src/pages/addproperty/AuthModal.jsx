@@ -76,64 +76,74 @@ const AuthModal = () => {
   };
 
   // ── Submit handlers ──────────────────────────────────────────────────────
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    const errs = validateLogin();
-    if (Object.keys(errs).length) { setLoginErrors(errs); return; }
+const handleLoginSubmit = async (e) => {
+  e.preventDefault();
+  const errs = validateLogin();
+  if (Object.keys(errs).length) { setLoginErrors(errs); return; }
 
-    setLoading(true);
-    try {
-      // ── REPLACE THIS BLOCK with your real API call ──────────────────────
-      //   e.g. const user = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-      await new Promise(r => setTimeout(r, 900)); // mock network delay
-      const mockUser = { name: loginEmail.split('@')[0], email: loginEmail };
-      // ────────────────────────────────────────────────────────────────────
-      login(mockUser);  // updates AuthContext, closes modal
-    } catch {
-      setLoginErrors({ password: 'Incorrect email or password. Please try again.' });
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    const response = await fetch('http://localhost/backstage-api/login.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      login(data.user); // Saves user to AuthContext and closes modal
+    } else {
+      // Displays PHP error message (e.g., "Your account is awaiting admin approval.")
+      setLoginErrors({ password: data.message });
     }
-  };
+  } catch (error) {
+    setLoginErrors({ password: 'Unable to connect to server. Check XAMPP.' });
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const handleSignupSubmit = async (e) => {
-    e.preventDefault();
-    const errs = validateSignup();
-    if (Object.keys(errs).length) { setSignupErrors(errs); return; }
+const handleSignupSubmit = async (e) => {
+  e.preventDefault();
+  const errs = validateSignup();
+  if (Object.keys(errs).length) { setSignupErrors(errs); return; }
 
-    setLoading(true);
-    try {
-      // ── REPLACE THIS BLOCK with your real API call ──────────────────────
-      //   e.g. await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
-      await new Promise(r => setTimeout(r, 1000)); // mock network delay
-      const mockUser = { name: `${signupFirstName} ${signupLastName}`, email: signupEmail };
-      // ────────────────────────────────────────────────────────────────────
-      setSuccess(true);
-      setTimeout(() => login(mockUser), 1400); // brief success flash, then close
-    } catch {
-      setSignupErrors({ email: 'This email may already be in use. Try logging in.' });
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    const fullName = `${signupFirstName.trim()} ${signupLastName.trim()}`;
+
+    const response = await fetch('http://localhost/backstage-api/register.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: fullName,
+        email: signupEmail,
+        password: signupPassword,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setSuccess(true); // Shows the 🎉 Account Created! banner
+    } else {
+      setSignupErrors({ email: data.message });
     }
-  };
+  } catch (error) {
+    setSignupErrors({ email: 'Unable to connect to server. Check XAMPP.' });
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const handleGoogleAuth = async () => {
-    setLoading(true);
-    try {
-      // ── REPLACE with: await signInWithPopup(auth, new GoogleAuthProvider()) ──
-      await new Promise(r => setTimeout(r, 800));
-      login({ name: 'Google User', email: 'google@example.com' });
-    } catch {
-      // handle error
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // ── Close on backdrop click ──────────────────────────────────────────────
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) closeAuthModal();
   };
+
+  
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
@@ -228,7 +238,7 @@ const AuthModal = () => {
               </button>
             </form>
 
-            <div className="auth-divider">or</div>
+            {/* <div className="auth-divider">or</div>
 
             <button className="auth-btn-social" onClick={handleGoogleAuth} disabled={loading}>
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -238,7 +248,7 @@ const AuthModal = () => {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               Continue with Google
-            </button>
+            </button> */}
 
             <p className="auth-switch">
               Don't have an account?{' '}
@@ -329,7 +339,7 @@ const AuthModal = () => {
               </button>
             </form>
 
-            <div className="auth-divider">or</div>
+            {/* <div className="auth-divider">or</div>
 
             <button className="auth-btn-social" onClick={handleGoogleAuth} disabled={loading}>
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -339,7 +349,7 @@ const AuthModal = () => {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               Continue with Google
-            </button>
+            </button> */}
 
             <p className="auth-switch">
               Already have an account?{' '}
