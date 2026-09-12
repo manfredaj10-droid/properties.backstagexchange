@@ -132,16 +132,16 @@ const handleSignupSubmit = async (e) => {
     });
 
     try {
-      response = await fetch('http://localhost/backstage-api/register.php', {
+      response = await fetch('http://localhost:8080/backstage-api/register.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: reqBody,
       });
-      if (!response.ok && response.status === 404) {
-        throw new Error('Fallback to port 8000');
+      if (!response.ok) {
+        throw new Error('Fallback');
       }
     } catch {
-      response = await fetch('http://localhost:8000/backstage-api/register.php', {
+      response = await fetch('http://localhost/backstage-api/register.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: reqBody,
