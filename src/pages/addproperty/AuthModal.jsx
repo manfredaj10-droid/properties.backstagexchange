@@ -18,6 +18,11 @@ import './AuthModal.css';
 const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 const isStrongPass  = (v) => v.length >= 8;
 
+// ─── Admin Notification Email ────────────────────────────────────────────────
+const ADMIN_EMAIL = 'manfredviegas@gmail.com';
+// Google Apps Script Web App URL for instant inbox notifications:
+const GOOGLE_SCRIPT_WEBHOOK_URL = '';
+
 // ─────────────────────────────────────────────────────────────────────────────
 const AuthModal = () => {
   const { closeAuthModal, login } = useAuth();
@@ -112,20 +117,58 @@ const handleSignupSubmit = async (e) => {
   setLoading(true);
   try {
     const fullName = `${signupFirstName.trim()} ${signupLastName.trim()}`;
-
-    const response = await fetch('http://localhost/backstage-api/register.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: fullName,
-        email: signupEmail,
-        password: signupPassword,
-      }),
+    const registrationTiming = new Date().toLocaleString('en-IN', {
+      dateStyle: 'full',
+      timeStyle: 'medium',
     });
+
+    let response;
+    const reqBody = JSON.stringify({
+      name: fullName,
+      email: signupEmail,
+      password: signupPassword,
+      admin_email: ADMIN_EMAIL,
+      registration_timing: registrationTiming,
+    });
+
+    try {
+      response = await fetch('http://localhost/backstage-api/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: reqBody,
+      });
+      if (!response.ok && response.status === 404) {
+        throw new Error('Fallback to port 8000');
+      }
+    } catch {
+      response = await fetch('http://localhost:8000/backstage-api/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: reqBody,
+      });
+    }
 
     const data = await response.json();
 
     if (data.success) {
+      // ─── Dispatch Admin Email Notification with Timing ─────────────────
+      try {
+        if (GOOGLE_SCRIPT_WEBHOOK_URL && GOOGLE_SCRIPT_WEBHOOK_URL.trim() !== '') {
+          await fetch(GOOGLE_SCRIPT_WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: fullName,
+              email: signupEmail,
+              timing: registrationTiming,
+            }),
+          });
+        }
+      } catch (notifyErr) {
+        console.warn('Admin notification error:', notifyErr);
+      }
+
       setSuccess(true); // Shows the 🎉 Account Created! banner
     } else {
       setSignupErrors({ email: data.message });
